@@ -2,6 +2,10 @@
 
 pluginManagement {
     repositories {
+        maven {
+            name = "janisslsmCanny"
+            url = uri("https://mvn.janisslsm.id.lv/canny")
+        }
         google()
         gradlePluginPortal()
     }
@@ -9,6 +13,10 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
+        maven {
+            name = "janisslsmCanny"
+            url = uri("https://mvn.janisslsm.id.lv/canny")
+        }
         mavenCentral()
         google()
         maven {

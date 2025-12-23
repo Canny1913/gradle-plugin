@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+import java.util.Locale
+
+
 plugins {
     `kotlin-dsl`
     alias(libs.plugins.publish)
@@ -21,6 +24,15 @@ dependencies {
     implementation(libs.jadx.core)
     implementation(libs.jadx.dexInput)
     implementation(libs.kotlinx.serialization)
+
+    val osName = System.getProperty("os.name").lowercase(Locale.getDefault())
+
+    when {
+        osName.contains("linux") -> implementation("com.canny1913:aapt2-linux:+")
+        else -> logger.warn("Cannot enable custom AAPT2 on this OS!")
+    }
+
+
 }
 
 gradlePlugin {

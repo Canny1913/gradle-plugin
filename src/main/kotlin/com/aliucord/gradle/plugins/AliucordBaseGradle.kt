@@ -20,6 +20,7 @@ import com.aliucord.gradle.getAndroid
 import com.aliucord.gradle.task.CompileDexTask
 import com.aliucord.gradle.task.CompileResourcesTask
 import com.aliucord.gradle.transformers.Dex2JarTransform
+import com.android.build.gradle.internal.res.GenerateLibraryRFileTask
 import com.android.build.gradle.tasks.ProcessLibraryManifest
 import org.gradle.api.*
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition
@@ -73,6 +74,9 @@ public abstract class AliucordBaseGradle : Plugin<Project> {
         }
 
         val compileDexTask = project.tasks.register<CompileDexTask>("compileDex") {
+            val generateRTask = project.tasks.getByName("generateDebugRFile") as GenerateLibraryRFileTask
+
+            dependsOn += generateRTask
             group = Constants.TASK_GROUP_INTERNAL
             outputDir.set(intermediates.map { it.dir("dex") })
 
@@ -88,7 +92,7 @@ public abstract class AliucordBaseGradle : Plugin<Project> {
                     .files
             })
 
-
+            input.from(generateRTask.rClassOutputJar)
             input.from(project.tasks.named("compileDebugJavaWithJavac"))
             input.from(try {
                 project.tasks.named("compileDebugKotlin")
