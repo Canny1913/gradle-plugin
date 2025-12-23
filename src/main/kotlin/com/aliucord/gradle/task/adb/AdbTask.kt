@@ -57,6 +57,9 @@ public abstract class AdbTask : DefaultTask() {
         val allSerials = getAllSerials()
         val serials = when (serialConfig) {
             null -> {
+                require(allSerials.isNotEmpty()) {
+                    "No ADB device found!"
+                }
                 require(allSerials.size == 1) {
                     "Only one ADB device should be connected, but ${allSerials.size} were!"
                 }
