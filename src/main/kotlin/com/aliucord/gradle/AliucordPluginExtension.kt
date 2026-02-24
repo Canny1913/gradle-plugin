@@ -172,4 +172,13 @@ public abstract class AliucordExtension @Inject constructor(private val project:
     public val updateUrl: Property<String> = project.objects.property<String>()
 
     internal val authors: ListProperty<PluginManifest.Author> = project.objects.listProperty<PluginManifest.Author>()
+
+    /**
+     * Whether to decompile discord code during project synchronization.
+     * Disabling this will only decompile method signatures,
+     * effectively generating a stub library.
+     */
+    public val decompileDiscordCode: Property<Boolean> = project.objects
+        .property<Boolean>()
+        .convention(false)
 }

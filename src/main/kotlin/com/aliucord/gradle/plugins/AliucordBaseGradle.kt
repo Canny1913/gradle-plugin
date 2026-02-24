@@ -16,6 +16,7 @@
 package com.aliucord.gradle.plugins
 
 import com.aliucord.gradle.Constants
+import com.aliucord.gradle.getAliucord
 import com.aliucord.gradle.getAndroid
 import com.aliucord.gradle.task.CompileDexTask
 import com.aliucord.gradle.task.CompileResourcesTask
@@ -53,10 +54,14 @@ public abstract class AliucordBaseGradle : Plugin<Project> {
 
     protected fun registerDex2jarTransformer(project: Project) {
         // Register a transform to convert "apk" artifact types to "jar"
+        val extension = project.extensions.getAliucord()
         project.dependencies {
             registerTransform(Dex2JarTransform::class) {
                 from.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "apk")
                 to.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "jar")
+                parameters {
+                    decompileCode = extension.decompileDiscordCode
+                }
             }
         }
     }

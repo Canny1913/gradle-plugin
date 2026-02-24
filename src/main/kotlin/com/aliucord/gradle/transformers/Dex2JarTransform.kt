@@ -19,12 +19,14 @@ import com.googlecode.d2j.dex.Dex2jar
 import com.googlecode.d2j.reader.MultiDexFileReader
 import org.gradle.api.artifacts.transform.*
 import org.gradle.api.file.FileSystemLocation
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.Input
 
 /**
  * Artifact transformer to convert `apk` artifact types into `jar` types using Dex2Jar.
  */
-public abstract class Dex2JarTransform : TransformAction<TransformParameters.None> {
+public abstract class Dex2JarTransform : TransformAction<Dex2JarParameters> {
     @get:InputArtifact
     public abstract val inputArtifact: Provider<FileSystemLocation>
 
@@ -35,7 +37,12 @@ public abstract class Dex2JarTransform : TransformAction<TransformParameters.Non
         Dex2jar.from(MultiDexFileReader.open(inputFile.readBytes()))
             .skipDebug(false)
             .topoLogicalSort()
-            .noCode(false)
+            .noCode(parameters.decompileCode.get().not()) // smh
             .to(outputFile.toPath())
     }
+}
+
+internal abstract class Dex2JarParameters: TransformParameters {
+    @get:Input
+    abstract val decompileCode: Property<Boolean>
 }
