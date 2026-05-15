@@ -15,6 +15,8 @@
 
 package com.aliucord.gradle.task.adb
 
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.work.DisableCachingByDefault
 
@@ -26,6 +28,10 @@ public abstract class RestartAliucordTask : AdbTask() {
     init {
         outputs.upToDateWhen { false }
     }
+
+    @Optional
+    @get:Input
+    private val waitForDebugger = project.findProperty("com.aliucord.adb.debugger") as? Boolean ?: false
 
     @TaskAction
     public fun run() {
