@@ -15,27 +15,21 @@
 
 package com.aliucord.gradle.transformers
 
-import com.googlecode.d2j.dex.Dex2jar
-import com.googlecode.d2j.reader.MultiDexFileReader
+import com.aliucord.gradle.generator.JarGenerator
 import org.gradle.api.artifacts.transform.*
 import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.provider.Provider
 
 /**
- * Artifact transformer to convert `apk` artifact types into `jar` types using Dex2Jar.
+ * Artifact transformer to convert `apk` artifact types into `jar` types using JADX.
  */
-public abstract class Dex2JarTransform : TransformAction<TransformParameters.None> {
+public abstract class Apk2JarTransform : TransformAction<TransformParameters.None> {
     @get:InputArtifact
     public abstract val inputArtifact: Provider<FileSystemLocation>
 
     override fun transform(outputs: TransformOutputs) {
         val inputFile = inputArtifact.get().asFile
-        val outputFile = outputs.file("jars/" + inputFile.nameWithoutExtension + ".jar")
-
-        Dex2jar.from(MultiDexFileReader.open(inputFile.readBytes()))
-            .skipDebug(false)
-            .topoLogicalSort()
-            .noCode(false)
-            .to(outputFile.toPath())
+        val outputFile = outputs.file(inputFile.nameWithoutExtension + ".jar")
+        JarGenerator(inputFile, outputFile).generate()
     }
 }

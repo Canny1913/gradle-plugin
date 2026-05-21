@@ -1,7 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-import java.util.Locale
-
 
 plugins {
     `kotlin-dsl`
@@ -11,7 +9,7 @@ plugins {
 
 kotlin {
     explicitApi()
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 dependencies {
@@ -20,33 +18,28 @@ dependencies {
     compileOnly(libs.android.sdk)
     compileOnly(libs.android.sdklib)
 
-    implementation(libs.dex2jar)
     implementation(libs.jadx.core)
     implementation(libs.jadx.dexInput)
     implementation(libs.kotlinx.serialization)
 
-    val osName = System.getProperty("os.name").lowercase(Locale.getDefault())
-
-    when {
-        osName.contains("linux") -> implementation("com.canny1913:aapt2-linux:+")
-        else -> logger.warn("Cannot enable custom AAPT2 on this OS!")
-    }
-
-
+    implementation(libs.asm)
+    implementation(libs.asm.commons)
+    implementation(libs.binaryResources)
+    implementation(libs.androidx.collections)
 }
 
 gradlePlugin {
     plugins {
-        create("aliucord-plugin") {
-            id = "com.aliucord.plugin"
+        create("aliucore-plugin") {
+            id = "com.aliucore.plugin"
             implementationClass = "com.aliucord.gradle.plugins.AliucordPluginGradle"
         }
-        create("aliucord-core") {
-            id = "com.aliucord.core"
+        create("aliucore-core") {
+            id = "com.aliucore.core"
             implementationClass = "com.aliucord.gradle.plugins.AliucordCoreGradle"
         }
-        create("aliucord-injector") {
-            id = "com.aliucord.injector"
+        create("aliucore-injector") {
+            id = "com.aliucore.injector"
             implementationClass = "com.aliucord.gradle.plugins.AliucordInjectorGradle"
         }
     }
@@ -55,26 +48,18 @@ gradlePlugin {
 version = "2.3.0"
 
 mavenPublishing {
-    coordinates("com.aliucord", "gradle")
+    coordinates("com.aliucore", "gradle")
     configureBasedOnAppliedPlugins()
 }
 
 publishing {
     repositories {
         maven {
-            name = "aliucord"
-            url = uri("https://maven.aliucord.com/releases")
+            name = "aliucore"
+            url = uri("https://mvn.janisslsm.id.lv/canny")
             credentials {
-                username = System.getenv("MAVEN_RELEASES_USERNAME")
-                password = System.getenv("MAVEN_RELEASES_PASSWORD")
-            }
-        }
-        maven {
-            name = "aliucordSnapshots"
-            url = uri("https://maven.aliucord.com/snapshots")
-            credentials {
-                username = System.getenv("MAVEN_SNAPSHOTS_USERNAME")
-                password = System.getenv("MAVEN_SNAPSHOTS_PASSWORD")
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
             }
         }
     }

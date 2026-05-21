@@ -29,7 +29,7 @@ import org.gradle.kotlin.dsl.register
 public abstract class AliucordInjectorGradle : AliucordBaseGradle() {
     override fun apply(target: Project) {
         registerTasks(target)
-        registerDex2jarTransformer(target)
+        registerApk2jarTransformer(target)
         deleteLegacyCache(target)
     }
 

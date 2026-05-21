@@ -38,7 +38,7 @@ public abstract class AliucordPluginGradle : AliucordBaseGradle() {
         } else {
             target.extensions.create<AliucordExtension>("aliucord")
             registerTasks(target)
-            registerDex2jarTransformer(target)
+            registerApk2jarTransformer(target)
         }
         deleteLegacyCache(target)
     }

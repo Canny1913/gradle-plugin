@@ -15,8 +15,8 @@
 
 package com.aliucord.gradle.task
 
-import com.googlecode.d2j.node.DexFileNode
-import com.googlecode.d2j.reader.DexFileReader
+import jadx.api.JadxArgs
+import jadx.api.JadxDecompiler
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
@@ -38,23 +38,21 @@ public abstract class ExtractPluginClassTask : DefaultTask() {
     @TaskAction
     public fun extract() {
         // Open a reader for all dex files from the input
-        val readers = inputs.asFileTree
-            .asSequence()
+        val jadxArgs = JadxArgs()
+        jadxArgs.inputFiles = inputs.asFileTree
+            .toMutableList()
             .filter { it.extension == "dex" }
-            .map(::DexFileReader)
 
-        // Get the root node and flatten all classes
-        val readerFlags = DexFileReader.SKIP_CODE or
-            DexFileReader.SKIP_DEBUG or
-            DexFileReader.SKIP_EXCEPTION or
-            DexFileReader.SKIP_FIELD_CONSTANT
-        val classes = readers
-            .map { reader -> DexFileNode().also { node -> reader.accept(node, readerFlags) } }
-            .flatMap { it.clzs }
+        val decompiler = JadxDecompiler(jadxArgs)
+        decompiler.load()
+
+        val classes = decompiler.classes
 
         // Find all classes annotated with @AliucordPlugin
         val pluginClasses = classes
-            .filter { cls -> cls.anns?.any { ann -> ann.type == "Lcom/aliucord/annotations/AliucordPlugin;" } == true }
+            .filter { cls ->
+                cls.classNode.getAnnotation("Lcom/aliucord/annotations/AliucordPlugin;") != null
+            }
             .toList()
 
         require(pluginClasses.isNotEmpty()) {
@@ -66,28 +64,28 @@ public abstract class ExtractPluginClassTask : DefaultTask() {
                 More than one class was found annotated with @AliucordPlugin!
                 An Aliucord plugin should have exactly one entrypoint class annotated with @AliucordPlugin.
 
-                Found classes: ${pluginClasses.joinToString(separator = " ") { it.className }}
+                Found classes: ${pluginClasses.joinToString(separator = " ") { it.fullName }}
             """.trimIndent()
         }
         val pluginClass = pluginClasses.single()
 
         // Ensure that the class extends `Plugin`
-        require(pluginClass.superClass == PLUGIN_CLASS) {
+        require(pluginClass.classNode.superClass.toString() == PLUGIN_CLASS) {
             "Plugins must extend Aliucord's Plugin class! " +
-                "Class ${pluginClass.className} was found to be overriding ${pluginClass.superClass}"
+                "Class ${pluginClass.fullName} was found to be overriding ${pluginClass.classNode.superClass}"
         }
 
         // Ensure that the class does not override getManifest()
         val hasManifestOverride = pluginClass.methods.any {
-            it.method.name == "getManifest" && it.method.desc == "()${MANIFEST_CLASS}"
+            it.methodNode.methodInfo.shortId == "getManifest()${MANIFEST_CLASS}"
         }
         require(!hasManifestOverride) {
             "Plugins cannot override getManifest()! " +
-                "Class ${pluginClass.className} was found to be overriding getManifest()!"
+                "Class ${pluginClass.fullName} was found to be overriding getManifest()!"
         }
 
         // Convert from a dex type signature to JVM classname
-        val pluginClassName = pluginClass.className
+        val pluginClassName = pluginClass.rawName
             .removeSurrounding("L", ";")
             .replace('/', '.')
 
@@ -96,7 +94,7 @@ public abstract class ExtractPluginClassTask : DefaultTask() {
     }
 
     private companion object {
-        const val PLUGIN_CLASS = "Lcom/aliucord/entities/Plugin;"
+        const val PLUGIN_CLASS = "com.aliucord.entities.Plugin"
         const val MANIFEST_CLASS = "Lcom/aliucord/entities/Plugin\$Manifest"
     }
 }

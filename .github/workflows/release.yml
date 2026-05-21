@@ -25,11 +25,11 @@ jobs:
 
       - name: Build & Publish
         env:
-          MAVEN_RELEASES_USERNAME: ${{ secrets.MAVEN_RELEASE_USERNAME }}
-          MAVEN_RELEASES_PASSWORD: ${{ secrets.MAVEN_RELEASE_PASSWORD }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
         run: |
           chmod +x ./gradlew
-          ./gradlew :publishToMavenLocal :publishAllPublicationsToAliucordRepository --stacktrace
+          ./gradlew :publishToMavenLocal :publishAllPublicationsToAliucoreRepository --stacktrace
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
