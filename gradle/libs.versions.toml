@@ -6,7 +6,7 @@ kotlin = "2.2.0"
 kotlinx-serialization = "1.9.0"
 publish = "0.34.0"
 asm = "9.9.1"
-binary-resources = "2.1.0"
+binary-resources = "2.1.1"
 androidx = "1.6.0"
 
 [libraries]
