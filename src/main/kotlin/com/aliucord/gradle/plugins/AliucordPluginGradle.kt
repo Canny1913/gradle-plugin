@@ -151,6 +151,7 @@ public abstract class AliucordPluginGradle : AliucordBaseGradle() {
                 minimumAliucordVersion = aliucordDependencyVersion,
                 minimumKotlinVersion = kotlinDependencyVersion,
                 minimumApiLevel = android.defaultConfig.minSdkVersion?.apiLevel,
+                initPhase = aliucord.initPhase.orNull
             )
             doFirst {
                 val newManifest = manifest.copy(
