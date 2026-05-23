@@ -29,16 +29,14 @@ public abstract class RestartAliucordTask : AdbTask() {
         outputs.upToDateWhen { false }
     }
 
-    @Optional
-    @get:Input
-    private val waitForDebugger = project.findProperty("com.aliucord.adb.debugger") as? Boolean ?: false
+    private val waitForDebugger = project.findProperty("com.aliucord.adb.debugger")?.toString()?.toBoolean() ?: false
 
     @TaskAction
     public fun run() {
         val args = arrayListOf(
             "start",
             "-S", // Force restart app
-            "-n", $$"'com.aliucord/com.discord.app.AppActivity$Main'",
+            "-n", $$"'com.aliucord/com.discord.app.AppActivity$Main'", // todo: remove hardcoding
         )
         if (this.waitForDebugger)
             args += "-D"
