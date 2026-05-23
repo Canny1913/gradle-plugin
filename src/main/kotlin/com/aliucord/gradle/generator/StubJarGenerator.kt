@@ -35,13 +35,15 @@ internal class StubJarGenerator(
     init {
         val jadxArgs = JadxArgs()
         jadxArgs.inputFiles = inputFiles
+        jadxArgs.isDeobfuscationOn = false
+        jadxArgs.isSkipResources = true
+        jadxArgs.isSkipSources = true
+        jadxArgs.isExportAsGradleProject = false
+        jadxArgs.decompilationMode = DecompilationMode.FALLBACK
         jadxArgs.pluginLoader = object : JadxPluginLoader {
             override fun load(): List<JadxPlugin?> = listOf(DexInputPlugin())
             override fun close() {}
         }
-        jadxArgs.isSkipSources = true
-        jadxArgs.isExportAsGradleProject = false
-        jadxArgs.decompilationMode = DecompilationMode.FALLBACK
         decompiler = JadxDecompiler(jadxArgs)
         decompiler.load()
     }
@@ -193,6 +195,8 @@ internal class StubJarGenerator(
             interfaces.add(it.getObject().replace(".", "/"))
         }
 
+        val superClass = classNode.superClass ?: if (isInner) { ArgType.OBJECT } else null
+
         val interfacesArray = interfaces.toTypedArray<String>()
         val signature = classNode.get(JadxAttrType.SIGNATURE)
 
@@ -205,8 +209,7 @@ internal class StubJarGenerator(
             access,
             internalName,
             signature?.signature,
-            if (classNode.superClass != null) classNode.superClass!!.getObject()
-                .replace('.', '/') else null,
+            superClass?.`object`?.replace('.', '/'),
             interfacesArray
         )
 
