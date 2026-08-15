@@ -72,8 +72,13 @@ public abstract class ExtractPluginClassTask : DefaultTask() {
         val pluginClass = pluginClasses.single()
 
         // Ensure that the class extends `Plugin`
-        require(pluginClass.superClass == PLUGIN_CLASS) {
-            "Plugins must extend Aliucord's Plugin class! " +
+        var currentSuper: String? = pluginClass.className
+        while (currentSuper != PLUGIN_CLASS) {
+            val superClass = pluginClasses.find { it.className == currentSuper } ?: break
+            currentSuper = superClass.superClass
+        }
+        require(currentSuper == PLUGIN_CLASS) {
+            "Plugins must inherit Aliucord's Plugin class! " +
                 "Class ${pluginClass.className} was found to be overriding ${pluginClass.superClass}"
         }
 
