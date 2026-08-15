@@ -171,5 +171,26 @@ public abstract class AliucordExtension @Inject constructor(private val project:
      */
     public val updateUrl: Property<String> = project.objects.property<String>()
 
+    /**
+     * Specifies the point in application lifecycle where this plugin will be initialized, which is [InitPhase.Activity] by default.
+     */
+    public val initPhase: Property<InitPhase> = project.objects.property<InitPhase>()
+
     internal val authors: ListProperty<PluginManifest.Author> = project.objects.listProperty<PluginManifest.Author>()
+}
+
+public enum class InitPhase {
+    /**
+     * Configures the plugin to initialize after [Application::onCreate()].
+     * This phase is appropriate for patching services, receivers,
+     * providers or code that runs before Activity initialization.
+     */
+    Application,
+
+    /**
+     * Configures the plugin to initialize after [Activity::onCreate()].
+     * This phase is appropriate for most plugins; however,
+     * it does not support patching backend initialization or services such as FCM notifications.
+     */
+    Activity
 }

@@ -15,6 +15,7 @@
 
 package com.aliucord.gradle.models
 
+import com.aliucord.gradle.InitPhase
 import kotlinx.serialization.Serializable
 
 /**
@@ -38,6 +39,7 @@ internal data class PluginManifest(
     var minimumAliucordVersion: String? = null,
     var minimumKotlinVersion: String? = null,
     var minimumApiLevel: Int? = null,
+    var initPhase: InitPhase? = null,
     val updateUrl: String?,
 ) {
     @Serializable
