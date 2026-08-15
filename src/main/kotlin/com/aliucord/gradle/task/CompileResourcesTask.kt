@@ -20,8 +20,11 @@ import com.android.build.gradle.internal.SdkComponentsBuildService
 import com.android.build.gradle.internal.services.getBuildService
 import com.android.sdklib.BuildToolInfo
 import org.gradle.api.DefaultTask
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
+import org.gradle.api.artifacts.type.ArtifactTypeDefinition
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.*
 import org.gradle.process.internal.ExecActionFactory
@@ -40,16 +43,31 @@ public abstract class CompileResourcesTask : DefaultTask() {
     @get:InputFile
     public abstract val manifestFile: RegularFileProperty
 
+    @get:OutputDirectory
+    public abstract val rClassOutput: DirectoryProperty
+
     @get:OutputFile
     public abstract val outputFile: RegularFileProperty
 
     @get:Inject
     protected abstract val execActionFactory: ExecActionFactory
 
+    private var discordJar: File? = null
     private val androidJar: Provider<File>
     private val aaptExecutable: Provider<File>
 
     init {
+        // todo: find a better way to do this
+        val classPathConfig = project.configurations.findByName("debugCompileClasspath")
+
+        discordJar = classPathConfig?.incoming?.artifactView {
+            attributes.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, ArtifactTypeDefinition.JAR_TYPE)
+        }?.artifacts?.artifacts?.find { artifact ->
+            val id = artifact.id.componentIdentifier as? ModuleComponentIdentifier
+            id?.group == "com.discord" && id.module == "discord"
+        }?.file
+
+
         val android = project.extensions.getAndroid()
         val sdkService = getBuildService<SdkComponentsBuildService, SdkComponentsBuildService.Parameters>(
             buildServiceRegistry = project.gradle.sharedServices)
@@ -82,10 +100,15 @@ public abstract class CompileResourcesTask : DefaultTask() {
             executable = aaptExecutable.get().path
             args("link")
             args("-I", androidJar.get().path)
+            discordJar?.let { args("-I", it.path) }
             args("-R", tmpRes.path)
             args("--manifest", manifestFile.get().asFile.path)
             args("-o", outputFile.get().asFile.path)
             args("--auto-add-overlay")
+            args("-v")
+            args("--java", rClassOutput.get().asFile.path)
+            args("--allow-reserved-package-id")
+            args("--package-id", 0x69) // todo: remove hardcoding
             execute()
         }
 

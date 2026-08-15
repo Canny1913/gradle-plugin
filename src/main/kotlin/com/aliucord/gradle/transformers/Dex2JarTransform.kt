@@ -15,11 +15,18 @@
 
 package com.aliucord.gradle.transformers
 
+import com.aliucord.gradle.generator.ResourceGenerator
 import com.googlecode.d2j.dex.Dex2jar
 import com.googlecode.d2j.reader.MultiDexFileReader
 import org.gradle.api.artifacts.transform.*
 import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.provider.Provider
+import java.io.File
+import java.nio.file.FileSystems
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardOpenOption
+import kotlin.io.path.Path
 
 /**
  * Artifact transformer to convert `apk` artifact types into `jar` types using Dex2Jar.
@@ -37,5 +44,29 @@ public abstract class Dex2JarTransform : TransformAction<TransformParameters.Non
             .topoLogicalSort()
             .noCode(false)
             .to(outputFile.toPath())
+
+        val zip = ZipWriter.open(outputFile)
+        ResourceGenerator(inputFile, zip).apply {
+            generateTableArsc()
+            generateRClass()
+        }
+        zip.close()
+    }
+}
+
+public class ZipWriter(
+    out: Path
+): AutoCloseable {
+    private val fs = FileSystems.newFileSystem(out)
+
+    public fun saveFile(fileName: String, data: ByteArray) {
+        val path = fs.getPath(fileName)
+        Files.deleteIfExists(path)
+        if (fileName.contains('/')) Files.createDirectories(path.parent)
+        Files.write(path, data, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)
+    }
+    public override fun close(): Unit = fs.close()
+    public companion object {
+        public fun open(file: File): ZipWriter = ZipWriter(Path(file.absolutePath))
     }
 }

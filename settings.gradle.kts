@@ -4,6 +4,10 @@ pluginManagement {
     repositories {
         google()
         gradlePluginPortal()
+        maven {
+            name = "aliucore"
+            url = uri("https://mvn.janisslsm.id.lv/canny")
+        }
     }
 }
 
@@ -14,6 +18,10 @@ dependencyResolutionManagement {
         maven {
             name = "aliucord"
             url = uri("https://maven.aliucord.com/releases")
+        }
+        maven {
+            name = "aliucore"
+            url = uri("https://mvn.janisslsm.id.lv/canny")
         }
     }
 }

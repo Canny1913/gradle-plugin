@@ -18,23 +18,23 @@ dependencies {
     compileOnly(libs.android.sdklib)
 
     implementation(libs.dex2jar)
-    implementation(libs.jadx.core)
-    implementation(libs.jadx.dexInput)
+    implementation(libs.binaryResources)
+    implementation(libs.androidx.collections)
     implementation(libs.kotlinx.serialization)
 }
 
 gradlePlugin {
     plugins {
-        create("aliucord-plugin") {
-            id = "com.aliucord.plugin"
+        create("aliucore-plugin") {
+            id = "com.aliucore.plugin"
             implementationClass = "com.aliucord.gradle.plugins.AliucordPluginGradle"
         }
-        create("aliucord-core") {
-            id = "com.aliucord.core"
+        create("aliucore-core") {
+            id = "com.aliucore.core"
             implementationClass = "com.aliucord.gradle.plugins.AliucordCoreGradle"
         }
-        create("aliucord-injector") {
-            id = "com.aliucord.injector"
+        create("aliucore-injector") {
+            id = "com.aliucore.injector"
             implementationClass = "com.aliucord.gradle.plugins.AliucordInjectorGradle"
         }
     }
