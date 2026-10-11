@@ -2,12 +2,12 @@
 android-gradle = "8.13.0"
 android-tools = "31.13.0"
 dex2jar = "2.4.0"
-jadx = "1.4.5"
 kotlin = "2.2.0"
 kotlinx-serialization = "1.9.0"
-publish = "0.34.0"
+publish = "2.2.1"
 binary-resources = "2.1.1"
 androidx = "1.6.0"
+shadow = "9.2.2"
 
 [libraries]
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-gradle" }
@@ -20,5 +20,6 @@ binaryResources = { module = "com.aliucore:binary-resources", version.ref = "bin
 androidx-collections = { module = "androidx.collection:collection", version.ref = "androidx" }
 
 [plugins]
-publish = { id = "com.vanniktech.maven.publish", version.ref = "publish" }
+publish = { id = "com.gradle.plugin-publish", version.ref = "publish" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
