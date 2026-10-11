@@ -64,7 +64,7 @@ gradlePlugin {
     }
 }
 
-version = "2.3.1"
+version = "2.3.2"
 group = "io.github.canny1913"
 
 tasks.shadowJar {
