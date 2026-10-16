@@ -43,7 +43,7 @@ gradlePlugin {
 version = "2.3.1"
 
 mavenPublishing {
-    coordinates("com.aliucord", "gradle")
+    coordinates("io.github.canny1913", "gradle")
     configureBasedOnAppliedPlugins()
 }
 
