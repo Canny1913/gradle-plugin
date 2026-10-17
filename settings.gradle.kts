@@ -5,8 +5,12 @@ pluginManagement {
         google()
         gradlePluginPortal()
         maven {
-            name = "aliucore"
-            url = uri("https://mvn.janisslsm.id.lv/canny")
+            name = "aliucord-release"
+            url = uri("https://maven.aliucord.com/releases")
+        }
+        maven {
+            name = "aliucord-snapshots"
+            url = uri("https://maven.aliucord.com/snapshots")
         }
     }
 }
@@ -16,12 +20,12 @@ dependencyResolutionManagement {
         mavenCentral()
         google()
         maven {
-            name = "aliucord"
+            name = "aliucord-release"
             url = uri("https://maven.aliucord.com/releases")
         }
         maven {
-            name = "aliucore"
-            url = uri("https://mvn.janisslsm.id.lv/canny")
+            name = "aliucord-snapshots"
+            url = uri("https://maven.aliucord.com/snapshots")
         }
     }
 }

@@ -6,7 +6,7 @@ jadx = "1.4.5"
 kotlin = "2.2.0"
 kotlinx-serialization = "1.9.0"
 publish = "0.34.0"
-binary-resources = "2.1.1"
+binary-resources = "2.1.0"
 androidx = "1.6.0"
 
 [libraries]
@@ -16,7 +16,7 @@ android-sdk = { module = "com.android.tools:sdk-common", version.ref = "android-
 android-sdklib = { module = "com.android.tools:sdklib", version.ref = "android-tools" }
 dex2jar = { module = "com.aliucord.d2j:dex-translator", version.ref = "dex2jar" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-binaryResources = { module = "com.aliucore:binary-resources", version.ref = "binary-resources" }
+binaryResources = { module = "io.github.canny1913:binary-resources", version.ref = "binary-resources" }
 androidx-collections = { module = "androidx.collection:collection", version.ref = "androidx" }
 
 [plugins]
