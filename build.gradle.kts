@@ -26,15 +26,15 @@ dependencies {
 gradlePlugin {
     plugins {
         create("aliucore-plugin") {
-            id = "com.aliucore.plugin"
+            id = "io.github.canny1913.plugin"
             implementationClass = "com.aliucord.gradle.plugins.AliucordPluginGradle"
         }
         create("aliucore-core") {
-            id = "com.aliucore.core"
+            id = "io.github.canny1913.core"
             implementationClass = "com.aliucord.gradle.plugins.AliucordCoreGradle"
         }
         create("aliucore-injector") {
-            id = "com.aliucore.injector"
+            id = "io.github.canny1913.injector"
             implementationClass = "com.aliucord.gradle.plugins.AliucordInjectorGradle"
         }
     }
